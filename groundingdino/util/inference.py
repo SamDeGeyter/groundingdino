@@ -135,7 +135,12 @@ def annotate(image_source: np.ndarray, boxes: torch.Tensor, logits: torch.Tensor
     ]
 
     box_annotator = sv.BoxAnnotator()
-    annotated_frame = cv2.cvtColor(image_source, cv2.COLOR_RGB2BGR)
+    # Convert the image to a supported depth (e.g., 8-bit unsigned integer)
+    normalized_image = cv2.normalize(image_source, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+
+    # Convert color from RGB to BGR
+    annotated_frame = cv2.cvtColor(normalized_image, cv2.COLOR_RGB2BGR)
+    # annotated_frame = cv2.cvtColor(image_source, cv2.COLOR_RGB2BGR)
     annotated_frame = box_annotator.annotate(scene=annotated_frame, detections=detections, labels=labels)
     return annotated_frame
 
